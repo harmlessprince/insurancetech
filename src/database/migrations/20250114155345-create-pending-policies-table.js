@@ -39,7 +39,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      soft_deleted_at: {
+      deleted_at: {
         allowNull: true,
         type: Sequelize.DATE,
       },

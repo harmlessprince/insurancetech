@@ -8,6 +8,9 @@ import { UserModule } from './user/user.module';
 import { WalletModule } from './wallet/wallet.module';
 import { ProductModule } from './product/product.module';
 import { CategoryModule } from './category/category.module';
+import { PlanModule } from './plan/plan.module';
+import { PolicyModule } from './policy/policy.module';
+import { PendingPolicyModule } from './pending-policy/pending-policy.module';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { CategoryModule } from './category/category.module';
     WalletModule,
     ProductModule,
     CategoryModule,
+    PlanModule,
+    PolicyModule,
+    PendingPolicyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
