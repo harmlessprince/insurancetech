@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('pending_policies', {
+    await queryInterface.createTable('policies', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -35,7 +35,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'plans',
           key: 'id',
         },
       },
@@ -48,6 +48,11 @@ module.exports = {
         type: Sequelize.DATE,
       },
     });
+    await queryInterface.addConstraint('policies', {
+      fields: ['user_id', 'plan_id'],
+      type: 'unique',
+      name: 'unique_user_id_plan_id',
+    });
   },
 
   async down (queryInterface, Sequelize) {
@@ -57,5 +62,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
+    await queryInterface.dropTable('policies');
   }
 };

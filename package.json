@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migrate:up": "npx sequelize-cli db:migrate --env development --debug",
     "migrate:undo": "npx sequelize-cli db:migrate:undo --env development",
-    "migration:generate": "npx sequelize-cli migration:generate"
+    "migration:generate": "npx sequelize-cli migration:generate",
+    "db:fresh": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
