@@ -1,34 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { PendingPolicyService } from './pending-policy.service';
 import { CreatePendingPolicyDto } from './dto/create-pending-policy.dto';
 import { UpdatePendingPolicyDto } from './dto/update-pending-policy.dto';
+import { PendingPolicy } from './entities/pending-policy.entity';
+import { PendingPolicyStatus, sendSuccessResponse } from '../core/utils';
+import { SuccessResponseDTO } from '../core/responseDTO';
 
 @Controller('pending-policy')
 export class PendingPolicyController {
   constructor(private readonly pendingPolicyService: PendingPolicyService) {}
 
-  @Post()
-  create(@Body() createPendingPolicyDto: CreatePendingPolicyDto) {
-    return this.pendingPolicyService.create(createPendingPolicyDto);
-  }
-
   @Get()
-  findAll() {
-    return this.pendingPolicyService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.pendingPolicyService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePendingPolicyDto: UpdatePendingPolicyDto) {
-    return this.pendingPolicyService.update(+id, updatePendingPolicyDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.pendingPolicyService.remove(+id);
+  async findAllPendingPolicies(@Query('planId') planId?: number): Promise<SuccessResponseDTO> {
+    const  pendingPolicies: PendingPolicy[] = await this.pendingPolicyService.findAll(planId, PendingPolicyStatus.UNUSED);
+    return sendSuccessResponse(pendingPolicies, "Pending policies retrieved successfully.");
   }
 }

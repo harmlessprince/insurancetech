@@ -1,26 +1,35 @@
-import { Injectable } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Product } from './entities/product.entity';
+import { Category } from '../category/entities/category.entity';
+import { REPOSITORIES } from '../core/utils';
 
 @Injectable()
 export class ProductService {
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  constructor(
+    @Inject(REPOSITORIES.PRODUCT_REPOSITORY)
+    private readonly productRepository: typeof Product,
+  ) {}
+
+  async findAll() {
+    return await this.productRepository.findAll({
+      include: {
+        model: Category,
+        attributes: ['name', 'type', 'price'],
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all product`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
-  }
-
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async findOne(id: number): Promise<Product | null> {
+    const product = await this.productRepository.findByPk(id, {
+      include: {
+        model: Category,
+        attributes: ['name', 'type', 'price'],
+      }
+    });
+    if (!product) {
+      throw new NotFoundException(`Product with id ${id} not found`);
+    }
+    return product;
   }
 }

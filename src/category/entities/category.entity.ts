@@ -1,20 +1,42 @@
 import { Column, Model, Table, HasMany } from 'sequelize-typescript';
 import { Product } from '../../product/entities/product.entity';
 
-@Table
+@Table({
+  timestamps: true,
+})
 export class Category extends Model {
 
-  @Column
+  @Column({
+    allowNull: false,
+  })
   name: string;
 
-  @Column
+  @Column({
+    allowNull: false,
+  })
   type: string;
 
-  @Column
+  @Column({
+    allowNull: false,
+  })
   slug: string;
 
-  @Column
+  @Column({
+    allowNull: false,
+  })
   price: number;
+
+  @Column({
+    field: 'created_at',
+    allowNull: false,
+  })
+  createdAt?: Date;
+
+  @Column({
+    field: 'updated_at',
+    allowNull: false,
+  })
+  updatedAt?: Date;
 
   @HasMany(() => Product)
   products: Product[];

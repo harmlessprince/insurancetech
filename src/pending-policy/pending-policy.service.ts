@@ -1,26 +1,98 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePendingPolicyDto } from './dto/create-pending-policy.dto';
-import { UpdatePendingPolicyDto } from './dto/update-pending-policy.dto';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import sequelize, { Transaction, where } from 'sequelize';
+import { PendingPolicyStatus, REPOSITORIES } from '../core/utils';
+import { PendingPolicy } from './entities/pending-policy.entity';
+import { Plan } from '../plan/entities/plan.entity';
 
 @Injectable()
 export class PendingPolicyService {
-  create(createPendingPolicyDto: CreatePendingPolicyDto) {
-    return 'This action adds a new pendingPolicy';
+  constructor(
+    @Inject(REPOSITORIES.PENDING_POLICY_REPOSITORY)
+    private readonly pendingPolicyRepository: typeof PendingPolicy,
+  ) {}
+
+  async findAll(
+    planId?: number,
+    status: string = PendingPolicyStatus.UNUSED,
+  ): Promise<PendingPolicy[]> {
+    const whereClause = planId
+      ? { plan_id: planId, status: status }
+      : { status: status };
+    return await this.pendingPolicyRepository.findAll({ where: whereClause });
   }
 
-  findAll() {
-    return `This action returns all pendingPolicy`;
+  async findOnePendingPolicyByIdAndPlanId(
+    pendingPolicyId: number,
+    planId: number,
+  ): Promise<PendingPolicy> {
+    const pendingPolicy = await this.pendingPolicyRepository.findOne({
+      where: {
+        id: pendingPolicyId,
+        plan_id: planId,
+        status: PendingPolicyStatus.UNUSED,
+      },
+      include: {
+        model: Plan,
+        attributes: ['product_id', 'id'],
+      },
+    });
+    if (!pendingPolicy) {
+      throw new BadRequestException(
+        'Pending policy not found or already activated',
+      );
+    }
+    return pendingPolicy;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} pendingPolicy`;
+  async findOnePendingPolicyById(
+    pendingPolicyId: number,
+  ): Promise<PendingPolicy> {
+    const pendingPolicy = await this.pendingPolicyRepository.findOne({
+      where: {
+        id: pendingPolicyId,
+        status: PendingPolicyStatus.UNUSED,
+      },
+      include: {
+        model: Plan,
+        attributes: ['product_id', 'id'],
+      },
+    });
+    if (!pendingPolicy) {
+      throw new BadRequestException(
+        'Pending policy not found or already activated',
+      );
+    }
+    return pendingPolicy;
   }
 
-  update(id: number, updatePendingPolicyDto: UpdatePendingPolicyDto) {
-    return `This action updates a #${id} pendingPolicy`;
+  async createPendingPolicies(
+    planId: number,
+    userId: number,
+    quantity: number,
+    transaction: sequelize.Transaction,
+  ) {
+    const pendingPolicies = Array.from({ length: quantity }, () => ({
+      planId: planId,
+      userId: userId,
+      status: PendingPolicyStatus.UNUSED,
+    }));
+    await this.pendingPolicyRepository.bulkCreate(pendingPolicies, {
+      transaction,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} pendingPolicy`;
+  async markAsUsed(
+    transaction: Transaction,
+    pendPolicyId: number,
+  ): Promise<void> {
+    await this.pendingPolicyRepository.update(
+      { status: PendingPolicyStatus.USED, deletedAt: new Date() },
+      { where: { id: pendPolicyId }, transaction },
+    );
   }
 }

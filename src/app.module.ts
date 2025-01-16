@@ -26,6 +26,8 @@ import { PendingPolicyModule } from './pending-policy/pending-policy.module';
         database: configService.get('DB_DATABASE'),
         models: [],
         autoLoadModels: true,
+        synchronize:  configService.get("NODE_ENV") == 'test',
+        logging: false,
       }),
       inject: [ConfigService],
     }),

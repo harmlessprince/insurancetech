@@ -1,34 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { PlanService } from './plan.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
+import { Plan } from './entities/plan.entity';
+import { sendSuccessResponse } from '../core/utils';
+import { SuccessResponseDTO } from '../core/responseDTO';
 
-@Controller('plan')
+@Controller('plans')
 export class PlanController {
   constructor(private readonly planService: PlanService) {}
 
-  @Post()
-  create(@Body() createPlanDto: CreatePlanDto) {
-    return this.planService.create(createPlanDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.planService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.planService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePlanDto: UpdatePlanDto) {
-    return this.planService.update(+id, updatePlanDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.planService.remove(+id);
+  @Post('/buy')
+  async create(
+    @Body() createPlanDto: CreatePlanDto,
+  ): Promise<SuccessResponseDTO> {
+    const plan: Plan = await this.planService.create(createPlanDto);
+    return sendSuccessResponse(plan, 'Plan purchased successfully', 201);
   }
 }

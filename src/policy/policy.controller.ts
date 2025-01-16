@@ -1,34 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { PolicyService } from './policy.service';
 import { CreatePolicyDto } from './dto/create-policy.dto';
 import { UpdatePolicyDto } from './dto/update-policy.dto';
+import { Policy } from './entities/policy.entity';
+import { sendSuccessResponse } from '../core/utils';
+import { ActivatePolicyDto } from './dto/activate-policy.dto';
 
 @Controller('policy')
 export class PolicyController {
   constructor(private readonly policyService: PolicyService) {}
 
   @Post()
-  create(@Body() createPolicyDto: CreatePolicyDto) {
-    return this.policyService.create(createPolicyDto);
+  async create(@Body() activatePolicyDto: ActivatePolicyDto) {
+    await this.policyService.activatePendingPolicy(activatePolicyDto);
+    return sendSuccessResponse(null, "Policy activated successfully", 201);
   }
 
   @Get()
-  findAll() {
-    return this.policyService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.policyService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePolicyDto: UpdatePolicyDto) {
-    return this.policyService.update(+id, updatePolicyDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.policyService.remove(+id);
+  async findAll(@Query('planId') planId?: number) {
+    const policies: Policy[] = await this.policyService.findAll(planId);
+    return sendSuccessResponse(policies, "Activated policies");
   }
 }

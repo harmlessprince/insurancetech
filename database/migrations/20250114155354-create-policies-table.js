@@ -3,18 +3,23 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('pending_policies', {
+    await queryInterface.createTable('policies', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      plan_id: {
+      policy_number: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      product_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'plans',
+          model: 'products',
           key: 'id',
         },
       },
@@ -26,10 +31,15 @@ module.exports = {
           key: 'id',
         },
       },
-      status: {
-        type: Sequelize.STRING,
+      plan_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: 'unused',
+        cascade: true,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'plans',
+          key: 'id',
+        },
       },
       created_at: {
         allowNull: false,
@@ -39,14 +49,21 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      deleted_at: {
-        allowNull: true,
-        type: Sequelize.DATE,
-      },
+    });
+    await queryInterface.addConstraint('policies', {
+      fields: ['user_id', 'plan_id'],
+      type: 'unique',
+      name: 'unique_user_id_plan_id',
     });
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('pending_policies');
+    /**
+     * Add reverting commands here.
+     *
+     * Example:
+     * await queryInterface.dropTable('users');
+     */
+    await queryInterface.dropTable('policies');
   }
 };

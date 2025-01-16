@@ -29,8 +29,16 @@ module.exports = {
         allowNull: false,
       },
       price: {
-        type: Sequelize.DataTypes.DECIMAL, //store in kobo 1 Naira
+        type: Sequelize.DataTypes.DECIMAL,
         allowNull: false,
+      },
+      created_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updated_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
       },
     });
 
