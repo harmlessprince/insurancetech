@@ -59,9 +59,6 @@ export class PlanService {
         { transaction },
       );
 
-      console.log(plan)
-
-
       await this.pendingPolicyService.createPendingPolicies(plan.id, createPlanDto.user_id, createPlanDto.quantity, transaction);
 
       await transaction.commit();

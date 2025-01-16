@@ -15,6 +15,7 @@ import { Policy } from './policy/entities/policy.entity';
       storage: ':memory:', // Use in-memory database
       autoLoadModels: true,
       synchronize: true, // Automatically sync models
+      logging: false,
     }),
     SequelizeModule.forFeature([Plan, Wallet, Product, Category, PendingPolicy, User, Policy]),
   ],

@@ -8,7 +8,7 @@ module.exports = {
     database: process.env.DB_DATABASE,
     host: process.env.DB_HOST,
     port: +process.env.DB_PORT,
-    dialect: 'mysql',
+    dialect: 'postgres',
     dialectOptions: {
       bigNumberStrings: true,
     },
@@ -19,7 +19,7 @@ module.exports = {
     database: process.env.DB_DATABASE + '_test',
     host: process.env.DB_HOST,
     port: +process.env.DB_PORT,
-    dialect: 'mysql',
+    dialect: 'postgres',
     dialectOptions: {
       bigNumberStrings: true,
     },

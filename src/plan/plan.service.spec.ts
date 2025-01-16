@@ -64,13 +64,7 @@ describe('PlanService', () => {
         },
       ],
       imports: [
-        SequelizeModule.forRoot({
-          dialect: 'sqlite',
-          storage: ':memory:',
-          autoLoadModels: true,
-          synchronize: true,
-        }),
-        SequelizeModule.forFeature([Plan, User, PendingPolicy, Policy, Category, Product, Wallet]),
+        TestingModule,
       ]
     }).compile();
     service = module.get<PlanService>(PlanService);
