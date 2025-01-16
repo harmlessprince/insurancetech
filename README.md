@@ -46,7 +46,7 @@ https://documenter.getpostman.com/view/11352884/2sAYQZHs5Z
     ```
     # create .env file at the root of your project
     # update .env file with database credentials like below
-    DB_USERNAME=johndoe
+    DB_USERNAME=*****
     DB_PASSWORD=*****
     DB_DATABASE=insurancetech
     DB_HOST=localhost
