@@ -35,8 +35,17 @@ https://documenter.getpostman.com/view/11352884/2sAYQZHs5Z
 
 1. clone the repository
 2. install dependencies (yarn install or npm install)
+   ```
+   # using npm
+   npm install
+   
+   # using yarn
+   yarn install
+   ```
 3. configure database and environment
     ```
+    # create .env file at the root of your project
+    # update .env file with database credentials like below
     DB_USERNAME=johndoe
     DB_PASSWORD=*****
     DB_DATABASE=insurancetech
