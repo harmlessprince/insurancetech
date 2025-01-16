@@ -50,7 +50,7 @@ https://documenter.getpostman.com/view/11352884/2sAYQZHs5Z
     DB_PASSWORD=*****
     DB_DATABASE=insurancetech
     DB_HOST=localhost
-    DB_PORT=3306
+    DB_PORT=5432
     PORT=3000
     NODE_ENV=development
    ```
